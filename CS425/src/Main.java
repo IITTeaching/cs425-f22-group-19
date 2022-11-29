@@ -52,6 +52,7 @@ public class Main {
     public static void login() throws Exception{
             char user_type;
             while(true){
+            user_type = 'X';
             System.out.println("Select Login Role:");	
             System.out.println("Enter 1: Manager");	
             System.out.println("Enter 2: Loan Manager");
@@ -62,14 +63,17 @@ public class Main {
             switch((int)user_type-48){
                 case 1:{
                     System.out.println("Logged in as Manager.");
+                    User_Manager.start();
                     break;
                 }
                 case 2:{
                     System.out.println("Logged in as Loan Manager.");
+                    User_LoanManager.start();
                     break;
                 }
                 case 3:{
                     System.out.println("Logged in as Teller.");
+                    User_Teller.start();
                     break;
                 }
                 case 4:{
