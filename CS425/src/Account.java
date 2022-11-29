@@ -16,7 +16,7 @@ public class Account<T> {
         this.type = type;
     }
 
-    // Getter
+    // Getter -1
     public T getAccountID() {
         return accountID;
     }
