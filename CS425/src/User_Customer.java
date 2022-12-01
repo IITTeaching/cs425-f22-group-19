@@ -14,7 +14,7 @@ public class User_Customer {
             int action = scan.nextInt();
             switch(action){
                     case 1:{
-                        
+                        Account.create();
                         break;
                     }
                     case 2:{
