@@ -12,7 +12,7 @@ public class Main {
 	// postgres URLs are of the form: jdbc:postgresql://host:port/database
 	public static final String JDBC_DB = "bank";
 	public static final String JDBC_PORT = "5432";
-	public static final String JDBC_HOST = "127.0.0.1";
+	public static final String JDBC_HOST = "104.194.100.186";
 	public static final String JDBC_URL = "jdbc:postgresql://" + JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DB;
 	public static final String DBUSER = "postgres";
 	public static final String DBPASSWD = "abc123";
