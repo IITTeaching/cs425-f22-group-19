@@ -38,7 +38,7 @@ public class Account {
         return accType;
     }
 
-    public static void create() throws Exception {
+    public static void create(int SSN) throws Exception {
         System.out.println("Create six digit account number: ");
         Scanner input = new Scanner(System.in);
         accID = input.nextInt();
@@ -80,7 +80,5 @@ public class Account {
         System.out.println("Type account ID want to delete: ");
         Scanner input = new Scanner(System.in);
         accID = input.nextInt();
-
-
     }
 }
