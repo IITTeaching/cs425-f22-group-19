@@ -1,48 +1,86 @@
-import java.util.*;
+import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.lang.*;
 
-public class Account<T> {
-    private T accNum;
-    private T accPin;
-    private T balance;
-    private T type;
+public class Account {
+    private static int accID;
+    private static double balance;
+    private static String accType;
 
     private static final Map<Integer, Account> accounts = new HashMap<>();
+
     // Setter
-    public Account(T accNum, T accPin) {
-        this.accNum = accNum;
-        this.accPin = accPin;
+    public Account(int accID) {
+        this.accID = accID;
     }
 
-    public void setBalance(T balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 
-    public void setType(T type) {
-        this.type = type;
+    public void setType(String accType) {
+        this.accType = accType;
     }
 
     // Getter
-    public T getAccNum() {
-        return accNum;
+    public int getAccID() {
+        return accID;
     }
 
-    public T getAccPin() { return accPin;}
 
-    public T getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public T getType() {
-        return type;
+    public String getType() {
+        return accType;
     }
 
-    public static void create() {
+    public static void create() throws Exception {
         System.out.println("Create six digit account number: ");
         Scanner input = new Scanner(System.in);
-        int accNum = input.nextInt();
-        System.out.println("Create four digit account pin: ");
+        accID = input.nextInt();
+        Account account = new Account(accID);
+        System.out.println("Select account type\n1. Checking 2. Saving");
         Scanner input2 = new Scanner(System.in);
-        int accPin = input2.nextInt();
-        Account account = new Account(accNum, accPin);
+        String type = input2.next();
+        if (type.equals('1')) accType = "Checking";
+        else if (type.equals('2')) accType = "Saving";
+        else System.out.println("Wrong account type.");
+
+        // Update to SQL Database
+        try {
+            Class.forName(Main.JDBC_DRIVER);
+            // create a connection
+            // Connection c = DriverManager.getConnection(Main.JDBC_URL, Main.DBUSER, Main.DBPASSWD);
+
+            // create a statement object to execute commands
+            Statement s = Main.c.createStatement();
+            //ResultSet r = s.executeQuery("INSERT INTO account VALUES (?,?);");
+            PreparedStatement pStmt = Main.c.prepareStatement("INSERT INTO account VALUES (?,?);");
+            pStmt.setInt(1, accID);
+            pStmt.setString(2, accType);
+
+            pStmt.executeQuery();
+            Main.c.commit();
+        } catch (Exception e) {
+            System.err.println("An error occurred: " + e.toString());
+            System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
+                    + Main.JDBC_HOST
+                    + " WITH PORT " + Main.JDBC_PORT
+                    + " AND DATABASE " + Main.JDBC_DB
+                    + " AND USER " + Main.DBUSER
+                    + " WITH PASSWORD " + Main.DBPASSWD);
+        }
+    }
+
+    public static void delete() throws Exception {
+        System.out.println("Type account ID want to delete: ");
+        Scanner input = new Scanner(System.in);
+        accID = input.nextInt();
+
+
     }
 }
