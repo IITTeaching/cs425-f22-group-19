@@ -17,6 +17,7 @@ public class Main {
 	public static final String DBUSER = "postgres";
 	public static final String DBPASSWD = "abc123";
     public static Connection c;
+	public static Statement s;
 
 	public static void main (String[] args) throws Exception {
 		try {

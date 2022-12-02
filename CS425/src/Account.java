@@ -52,13 +52,6 @@ public class Account {
 
         // Update to SQL Database
         try {
-            Class.forName(Main.JDBC_DRIVER);
-            // create a connection
-            // Connection c = DriverManager.getConnection(Main.JDBC_URL, Main.DBUSER, Main.DBPASSWD);
-
-            // create a statement object to execute commands
-            Statement s = Main.c.createStatement();
-            //ResultSet r = s.executeQuery("INSERT INTO account VALUES (?,?);");
             PreparedStatement pStmt = Main.c.prepareStatement("INSERT INTO account VALUES (?,?);");
             pStmt.setInt(1, accID);
             pStmt.setString(2, accType);
@@ -79,6 +72,26 @@ public class Account {
     public static void delete() throws Exception {
         System.out.println("Type account ID want to delete: ");
         Scanner input = new Scanner(System.in);
-        accID = input.nextInt();
+        int delAcc = input.nextInt();
+
+        if (accounts.containsKey(delAcc) == true) {
+            accounts.remove(delAcc);
+        }
+        else  System.out.println("There is no account" + delAcc + "in our system.");
+
+        // Update to SQL Database
+        try {
+            Main.s.executeUpdate("DELETE FROM account where account_id = delACC;");
+            Main.c.commit();
+        }
+        catch (Exception e) {
+            System.err.println("An error occurred: " + e.toString());
+            System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
+                    + Main.JDBC_HOST
+                    + " WITH PORT " + Main.JDBC_PORT
+                    + " AND DATABASE " + Main.JDBC_DB
+                    + " AND USER " + Main.DBUSER
+                    + " WITH PASSWORD " + Main.DBPASSWD);
+        }
     }
 }
