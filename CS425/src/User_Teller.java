@@ -46,7 +46,7 @@ public class User_Teller {
                         break;
                     }
                     case 3:{
-                        
+                        Account.deposit(SSN);
                         break;
                     }
                     case 4:{

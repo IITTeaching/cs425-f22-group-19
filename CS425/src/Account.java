@@ -119,44 +119,89 @@ public class Account {
     public static void withdrawal(int SSN) {
         double newBal = 0;
         double amount = 0;
-        System.out.println("Please ENTER your account number: ");
+
         Scanner input = new Scanner(System.in);
-        int withAcc = input.nextInt();
-        Account account = new Account(withAcc);
-        double accAmoun = balances.get(withAcc);
 
-        System.out.println("How much you want to withdrawal?");
-        Scanner input1 = new Scanner(System.in);
-        amount = input.nextDouble();
+        Account custAcc = accounts.get(SSN);
+        System.out.println("Is this account number to deposite?" + custAcc);
+        System.out.println("1. Yes  2. No");
+        int action = input.nextInt();
 
-        // Check the balance is enough
-        if (accAmoun >= amount) {
-            newBal = accAmoun - amount;
-            balances.put(account, newBal);
+        switch (action) {
+            case 1: {
+                Account account = new Account(Integer.parseInt(custAcc.toString()));
+                double accAmoun = balances.get(custAcc);
+                System.out.println("How much you want to withdrawal?");
+                amount = input.nextDouble();
+
+                if (accAmoun >= amount) {
+                    newBal = accAmoun - amount;
+                    balances.put(account, newBal);
+                }
+
+                else if (accAmoun < amount && negAllow == false)
+                    System.out.println("Cannot withdrawal " + amount + ", it will be overdraft.");
+
+                else if (accAmoun < amount && negAllow == true) {
+                    newBal = accAmoun - amount;
+                    balances.put(account, newBal);
+                }
+
+                // Update SQL Database
+                try {
+                    Main.s.executeUpdate("UPDATE balance = newBal FROM account WHERE account_id = custAcc;");
+                    Main.c.commit();
+                } catch (Exception e) {
+                    System.err.println("An error occurred: " + e.toString());
+                    System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
+                            + Main.JDBC_HOST
+                            + " WITH PORT " + Main.JDBC_PORT
+                            + " AND DATABASE " + Main.JDBC_DB
+                            + " AND USER " + Main.DBUSER
+                            + " WITH PASSWORD " + Main.DBPASSWD);
+                }
+                break;
+            }
+
+            case 2: {
+                System.out.println("Please ENTER your account number: ");
+                int withAcc = input.nextInt();
+                Account account = new Account(withAcc);
+                double accAmoun = balances.get(withAcc);
+
+                System.out.println("How much you want to withdrawal?");
+                amount = input.nextDouble();
+
+                // Check the balance is enough
+                if (accAmoun >= amount) {
+                    newBal = accAmoun - amount;
+                    balances.put(account, newBal);
+                }
+
+                else if (accAmoun < amount && negAllow == false)
+                    System.out.println("Cannot withdrawal " + amount + ", it will be overdraft.");
+
+                else if (accAmoun < amount && negAllow == true) {
+                    newBal = accAmoun - amount;
+                    balances.put(account, newBal);
+                }
+
+                // Update SQL Database
+                try {
+                    Main.s.executeUpdate("UPDATE balance = newBal FROM account WHERE account_id = withAcc;");
+                    Main.c.commit();
+                } catch (Exception e) {
+                    System.err.println("An error occurred: " + e.toString());
+                    System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
+                            + Main.JDBC_HOST
+                            + " WITH PORT " + Main.JDBC_PORT
+                            + " AND DATABASE " + Main.JDBC_DB
+                            + " AND USER " + Main.DBUSER
+                            + " WITH PASSWORD " + Main.DBPASSWD);
+                }
+                break;
+            }
         }
-
-        else if (accAmoun < amount && negAllow == false)
-            System.out.println("Cannot withdrawal " + amount + ", it will be overdraft.");
-
-        else if (accAmoun < amount && negAllow == true) {
-            newBal = accAmoun - amount;
-            balances.put(account, newBal);
-        }
-
-        // Update SQL Database
-        try {
-            Main.s.executeUpdate("UPDATE balance = newBal FROM account WHERE account_id = withAcc;");
-            Main.c.commit();
-        } catch (Exception e) {
-            System.err.println("An error occurred: " + e.toString());
-            System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
-                    + Main.JDBC_HOST
-                    + " WITH PORT " + Main.JDBC_PORT
-                    + " AND DATABASE " + Main.JDBC_DB
-                    + " AND USER " + Main.DBUSER
-                    + " WITH PASSWORD " + Main.DBPASSWD);
-        }
-
     }
 
     // Deposit function
@@ -182,7 +227,7 @@ public class Account {
 
                 // Update SQL Database
                 try {
-                    Main.s.executeUpdate("UPDATE balance = newBal FROM account WHERE account_id = depAcc;");
+                    Main.s.executeUpdate("UPDATE balance = newBal FROM account WHERE account_id = custAcc;");
                     Main.c.commit();
                 } catch (Exception e) {
                     System.err.println("An error occurred: " + e.toString());
@@ -193,6 +238,7 @@ public class Account {
                             + " AND USER " + Main.DBUSER
                             + " WITH PASSWORD " + Main.DBPASSWD);
                 }
+                break;
             }
 
             case 2: {
@@ -221,6 +267,7 @@ public class Account {
                             + " AND USER " + Main.DBUSER
                             + " WITH PASSWORD " + Main.DBPASSWD);
                 }
+                break;
             }
         }
     }
