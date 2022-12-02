@@ -165,6 +165,8 @@ public class Account {
                             + " WITH PASSWORD " + Main.DBPASSWD);
                 }
             }
+            default ->
+                    System.out.println("Invalid option selected, please try again.");
         }
     }
 
@@ -176,7 +178,7 @@ public class Account {
         Scanner input = new Scanner(System.in);
 
         Account custAcc = accounts.get(SSN);
-        System.out.println("Is this account number to deposite?" + custAcc);
+        System.out.println("Is this account number to deposit?" + custAcc);
         System.out.println("1. Yes  2. No");
         int action = input.nextInt();
         switch (action) {
@@ -230,6 +232,9 @@ public class Account {
                             + " WITH PASSWORD " + Main.DBPASSWD);
                 }
             }
+
+            default ->
+                    System.out.println("Invalid option selected, please try again.");
         }
     }
 

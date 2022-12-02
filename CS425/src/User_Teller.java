@@ -23,45 +23,35 @@ public class User_Teller {
             System.out.println("Enter 4: Check Balance");
             System.out.println("Enter 5: Logout");
             int action = scan.nextInt();
-            switch(action){
-                    case 1:{
-                        System.out.println("Select Option:");
-                        System.out.println("Enter 1: Create Account");
-                        System.out.println("Enter 2: Remove Account");
-                        int action1 = scan.nextInt();
-                        switch(action1) {
-                            case 1:{
-                                Account.create(SSN);
-                                break;
-                            }
-                            case 2: {
-                                Account.delete(SSN);
-                                break;
-                            }
-                        }
-                        break;
+            switch (action) {
+                case 1 -> {
+                    System.out.println("Select Option:");
+                    System.out.println("Enter 1: Create Account");
+                    System.out.println("Enter 2: Remove Account");
+                    int action1 = scan.nextInt();
+                    switch (action1) {
+                        case 1 ->
+                            Account.create(SSN);
+
+                        case 2 ->
+                            Account.delete(SSN);
                     }
-                    case 2:{
-                        Account.withdrawal(SSN);
-                        break;
-                    }
-                    case 3:{
-                        Account.deposit(SSN);
-                        break;
-                    }
-                    case 4:{
-                        
-                        break;
-                    }
-                    case 5:{
-                        System.out.println("Logged out.");
-                        loggedIn = false;
-                        break;
-                    }
-                    default:{
-                        System.out.println("Invalid option selected, please try again.");
-                        break;
-                   }   
+                }
+                case 2 ->
+                    Account.withdrawal(SSN);
+
+                case 3 ->
+                    Account.deposit(SSN);
+
+                case 4 -> {
+
+                }
+                case 5 -> {
+                    System.out.println("Logged out.");
+                    loggedIn = false;
+                }
+                default ->
+                    System.out.println("Invalid option selected, please try again.");
             }
         }
     }
