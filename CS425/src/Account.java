@@ -16,31 +16,6 @@ public class Account {
         Account.accID = accID;
     }
 
-//    public void setBalance(double balance) {
-//        this.balance = balance;
-//    }
-//
-//    public void setType(String accType) {
-//        this.accType = accType;
-//    }
-//
-//    public void setNegAllow(boolean negAllow) { this.negAllow = negAllow; }
-//
-//    // Getter
-//    public static int getAccID(int account) {
-//        return accID;
-//    }
-
-
-//    public double getBalance() {
-//        return balance;
-//    }
-//
-//    public String getType() {
-//        return accType;
-//    }
-//
-//    public boolean getNegAllow() {return negAllow; }
 
     public static void create(int SSN) {
         System.out.println("Create six digit account number: ");
