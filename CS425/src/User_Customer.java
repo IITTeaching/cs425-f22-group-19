@@ -21,7 +21,7 @@ public class User_Customer {
             System.out.println("Select Option:");	
             System.out.println("Enter 1: Create Account");	
             System.out.println("Enter 2: Remove Account");
-            System.out.println("Enter 3: Withdrawl");
+            System.out.println("Enter 3: Withdrawal");
             System.out.println("Enter 4: Deposit");
             System.out.println("Enter 5: Check Balance");
             System.out.println("Enter 6: Logout");
@@ -32,7 +32,7 @@ public class User_Customer {
                         break;
                     }
                     case 2:{
-                        
+                        Account.delete(SSN);
                         break;
                     }
                     case 3:{
