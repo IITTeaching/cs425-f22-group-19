@@ -43,9 +43,9 @@ public class User_Teller {
                 case 3 ->
                     Account.deposit(SSN);
 
-                case 4 -> {
+                case 4 ->
+                    Account.accInfo(SSN);
 
-                }
                 case 5 -> {
                     System.out.println("Logged out.");
                     loggedIn = false;

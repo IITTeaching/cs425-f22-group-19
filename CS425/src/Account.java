@@ -7,6 +7,8 @@ public class Account {
     private static int accID;
     private static String accType;
     private static boolean negAllow;
+    private static double interest_rate;
+    private static double overdraft_fee;
 
     private static final Hashtable<Integer, Account> accounts = new Hashtable<>();
     private static final Hashtable<Account, Double> balances = new Hashtable<>();
@@ -16,7 +18,7 @@ public class Account {
         Account.accID = accID;
     }
 
-
+    // Need to add 'overdraft fee' and 'interest rate'
     public static void create(int SSN) {
         System.out.println("Create six digit account number: ");
         Scanner input = new Scanner(System.in);
@@ -240,6 +242,12 @@ public class Account {
 
     // Show and store informations, such as account number, fee, interest, and etc.
     public static void accInfo(int SSN) {
+        Account account = accounts.get(SSN);
+        double balance = balances.get(account);
+        System.out.println("Your account " + account + " balance is " + " balance.");
+
+        // interest rate
+        // overdraft fee
 
     }
 }
