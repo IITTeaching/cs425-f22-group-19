@@ -54,12 +54,14 @@ public class Main {
             char user_type;
             while(true){
             user_type = 'X';
-            System.out.println("Select Login Role:");	
-            System.out.println("Enter 1: Manager");	
-            System.out.println("Enter 2: Loan Manager");
-            System.out.println("Enter 3: Teller");
-            System.out.println("Enter 4: Customer");
+            System.out.println("Select Role:");	
+            System.out.println("Enter 1: User");	
+            System.out.println("Enter 2: Employee");
             System.out.println("Enter 5: Exit");
+			// Ask the user to enter ssn
+			// based on ssn search database to find what the user role 
+			// if role is x set user_type to corresponding number
+			// pass the ssn to start functions
             user_type = ((char)System.in.read());
             switch((int)user_type-48){
                 case 1:{
@@ -68,21 +70,16 @@ public class Main {
                     break;
                 }
                 case 2:{
-                    System.out.println("Logged in as Loan Manager.");
-                    User_LoanManager.start();
-                    break;
-                }
-                case 3:{
                     System.out.println("Logged in as Teller.");
                     User_Teller.start();
                     break;
                 }
-                case 4:{
+                case 3:{
                     System.out.println("Logged in as Customer.");
                     User_Customer.start();
                     break;
                 }
-                case 5:{
+                case 4:{
                     System.out.println("Exited.");
                     return;
                 }
