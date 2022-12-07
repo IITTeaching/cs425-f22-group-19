@@ -19,28 +19,28 @@ public class User_Manager {
             int action = scan.nextInt();
             switch(action){
                     case 1:{
-                        Function.changeInterest( SSN);
+                        Function.updateInterest(SSN);
                         break;
                     }
                     case 2:{
                         
-                        Function.changeAccountFee( SSN);
+                        Function.changeAccountFee(SSN);
                         break;
                     }
                     case 3:{
-                        Function.changeOverdraft( SSN);
+                        Function.changeOverdraft(SSN);
                         break;
                     }
                     case 4:{
-                        Function.ShowStatment( SSN);
+                        Function.ShowStatment(SSN);
                         break;
                     }
                     case 5:{
-                        Function.CreateAccount( SSN);
+                        Function.CreateAccount(SSN);
                         break;
                     }
                     case 6:{
-                        Function.RemoveAccount( SSN);
+                        Function.RemoveAccount(SSN);
                         break;
                     }
                     case 7:{
