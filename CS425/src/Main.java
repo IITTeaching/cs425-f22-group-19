@@ -5,6 +5,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Connection;
+import java.util.Scanner;
 
 public class Main {
 
@@ -12,7 +13,7 @@ public class Main {
 	// postgres URLs are of the form: jdbc:postgresql://host:port/database
 	public static final String JDBC_DB = "bank";
 	public static final String JDBC_PORT = "5432";
-	public static final String JDBC_HOST = "104.194.100.186";
+	public static final String JDBC_HOST = "104.194.112.188";
 	public static final String JDBC_URL = "jdbc:postgresql://" + JDBC_HOST + ":" + JDBC_PORT + "/" + JDBC_DB;
 	public static final String DBUSER = "postgres";
 	public static final String DBPASSWD = "abc123";
@@ -50,33 +51,124 @@ public class Main {
 		}
 	}
 	
-    public static void login() throws Exception{
-            char user_type;
-            while(true){
-            user_type = 'X';
-            System.out.println("Select Role:");	
-            System.out.println("Enter 1: User");	
-            System.out.println("Enter 2: Employee");
-            System.out.println("Enter 5: Exit");
+    public static void login() throws Exception
+	{
+			Scanner scan = new Scanner(System.in);
+            while(true)
+			{
+
+            int role = -1;
+			while(true)
+			{
+				System.out.println("Select Role:");	
+				System.out.println("Enter 1: Customer");	
+				System.out.println("Enter 2: Employee");
+				System.out.println("Enter 3: Exit");
+				role = scan.nextInt();
+				if(role == 1 || role == 2 || role == 3)
+					break;
+			}
+			if(role == 3){
+				System.out.println("Exited.");
+				return;
+			}
+		
+            int user_type = -1;
+			int SSN = 0;
+			while(true)
+			{
+				
+
+				// Find Customer
+				if(role == 1)
+				{
+					System.out.println("Enter Customer SSN:");	
+					SSN = scan.nextInt();
+					try {					
+						PreparedStatement pStmt = Main.c.prepareStatement("SELECT from customer WHERE ssn = ?");
+						pStmt.setInt(1, SSN);
+						ResultSet r1 = pStmt.executeQuery();
+						int count = 0;
+						while(r1.next()){
+							count++;
+						}
+						r1.close();
+						if(count > 0){
+							user_type = 3;
+							break;
+						}
+						else {
+							System.out.println("Could not find any customer with entered SSN, please try again.");	
+							user_type = -1;
+						}
+							
+					} catch (Exception e) {
+						System.out.println("Failed to find customer with entered SSN: " + e.getMessage());	
+						user_type = -1;
+				  }
+				}// Find Employee
+				else if(role == 2)
+				{
+					System.out.println("Enter Employee SSN:");	
+					SSN = scan.nextInt();
+					try {					
+						PreparedStatement pStmt = Main.c.prepareStatement("SELECT* from employee WHERE ssn = ?");
+						pStmt.setInt(1, SSN);
+						ResultSet r1 = pStmt.executeQuery();
+						int count = 0;
+						String found_role = "";
+						while(r1.next()){
+							count++;
+							found_role = r1.getString("role");
+						}
+						r1.close();
+						if(count > 0)
+						{
+							
+							if(found_role.equals("Manager") ){
+								user_type = 1;
+								break;
+							}
+							else if (found_role.equals("Teller")){
+								user_type = 2;
+								break;
+							}
+							else{
+								System.out.println("Could not find correct role with entered SSN, please try again.");	
+							}
+						}						
+						else 
+						{
+							System.out.println("Could not find any employee with entered SSN, please try again.");	
+							user_type = -1;
+						}
+							
+					} catch (Exception e) {
+						System.out.println("Failed to find employee with entered SSN: " + e.getMessage());	
+						user_type = -1;
+				  }
+				}				
+			}
+			
 			// Ask the user to enter ssn
 			// based on ssn search database to find what the user role 
 			// if role is x set user_type to corresponding number
 			// pass the ssn to start functions
-            user_type = ((char)System.in.read());
-            switch((int)user_type-48){
+			
+            switch(user_type){
                 case 1:{
                     System.out.println("Logged in as Manager.");
-                    User_Manager.start();
+                    User_Manager.start(SSN);
                     break;
                 }
                 case 2:{
                     System.out.println("Logged in as Teller.");
-                    User_Teller.start();
+                    User_Teller.start(SSN);
                     break;
                 }
                 case 3:{
                     System.out.println("Logged in as Customer.");
-                    User_Customer.start();
+                    User_Customer.start(SSN);
                     break;
                 }
                 case 4:{
@@ -84,7 +176,7 @@ public class Main {
                     return;
                 }
                 default:{
-                    System.out.println("Invalid role selected, please try again.");
+                    System.out.println("Invalid user selected, please try again.");
                     break;
                 }   
             }

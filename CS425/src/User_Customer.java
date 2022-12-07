@@ -12,7 +12,7 @@ public class User_Customer {
             System.out.println("Enter 3: Withdrawal");
             System.out.println("Enter 4: Deposit");
             System.out.println("Enter 5: Check Balance");
-            System.out.println("Enter 6: Monthly Statment");
+            System.out.println("Enter 6: Monthly Statement");
             System.out.println("Enter 7: Make a Transfer");
             System.out.println("Enter 8: Logout");
             int action = scan.nextInt();
@@ -26,19 +26,19 @@ public class User_Customer {
                         break;
                     }
                     case 3:{
-                        Function.Withdrawal(SSN);
+                        //Function.Withdrawal(SSN);
                         break;
                     }
                     case 4:{
-                        Function.Deposit(SSN);
+                        //Function.Deposit(SSN);
                         break;
                     }
                     case 5:{
-                        Function.CheckBalance(SSN);
+                        Function.ShowBalance(SSN);
                         break;
                     }
                     case 6:{
-                        Function.ShowStatment(SSN);
+                        //Function.ShowStatement(SSN);
                         break;
                     }
                     case 7:{

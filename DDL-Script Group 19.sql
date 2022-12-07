@@ -28,7 +28,7 @@ account_id SERIAL UNIQUE PRIMARY KEY,
 ssn numeric(9),
 balance FLOAT NOT NULL,
 type VARCHAR(16) NOT NULL,
-interest_rate INT, 
+interest_rate FLOAT, 
 allow_negative boolean NOT NULL, 
 overdraft_fee INT,
 monthly_fee INT,
@@ -51,15 +51,15 @@ FOREIGN KEY (home_branch) REFERENCES branch ON DELETE CASCADE
 CREATE TABLE transaction (
 transaction_id SERIAL UNIQUE PRIMARY KEY,
 account_id INT NOT NULL,
-type VARCHAR(16) NOT NULL,
-amount INT NOT NULL,
-description VARCHAR(255),
-account_recipient INT,
+type VARCHAR(24) NOT NULL,
+amount FLOAT NOT NULL,
+transaction_date DATE,
 account_sender INT,
+account_recipient INT,
 FOREIGN KEY (account_id) REFERENCES account,
 FOREIGN KEY (account_recipient) REFERENCES account,
 FOREIGN KEY (account_sender) REFERENCES account,
-CONSTRAINT transaction_type_check CHECK (type IN ('Deposit', 'Withdrawal', 'Transfer', 'ExternalTransfer'))
+CONSTRAINT transaction_type_check CHECK (type IN ('Deposit', 'Withdrawal', 'Internal Transfer', 'External Transfer'))
 );
 
 CREATE TABLE loan (

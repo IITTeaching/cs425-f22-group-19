@@ -1,5 +1,9 @@
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.util.Scanner;
 public class User_Manager {
+    
+
     public static void start(int SSN) throws Exception{
         boolean loggedIn = true;
         while(loggedIn){
@@ -7,7 +11,7 @@ public class User_Manager {
             System.out.println("Select Option:");	
             System.out.println("Enter 1: Change Interest Fee");
             System.out.println("Enter 2 Change Account Fee");
-            System.out.println("Enter 3: Change OVerdraft Fees");
+            System.out.println("Enter 3: Change Overdraft Fees");
             System.out.println("Enter 4: Show Monthly Statment");
             System.out.println("Enter 5: Create Account");	
             System.out.println("Enter 6: Remove Account");
@@ -19,45 +23,45 @@ public class User_Manager {
             int action = scan.nextInt();
             switch(action){
                     case 1:{
-                        Function.changeInterest( SSN);
+                        //Function.updateInterest(Function.selectCustomer());
                         break;
                     }
                     case 2:{
                         
-                        Function.changeAccountFee( SSN);
+                        //Function.updateAccountFee(Function.selectCustomer());
                         break;
                     }
                     case 3:{
-                        Function.changeOverdraft( SSN);
+                        //Function.updateOverdraft(Function.selectCustomer());
                         break;
                     }
                     case 4:{
-                        Function.ShowStatment( SSN);
+                        //Function.ShowStatement(Function.selectCustomer());
                         break;
                     }
                     case 5:{
-                        Function.CreateAccount( SSN);
+                        Function.CreateAccount(Function.selectCustomer());
                         break;
                     }
                     case 6:{
-                        Function.RemoveAccount( SSN);
+                        Function.RemoveAccount(Function.selectCustomer());
                         break;
                     }
                     case 7:{
                         
-                        Function.Withdrawl( SSN);
+                        //Function.Withdrawl(Function.selectCustomer());
                         break;
                     }
                     case 8:{
-                        Function.Deposit( SSN);
+                        //Function.Deposit(Function.selectCustomer());
                         break;
                     }
                     case 9:{
-                        Function.CheckBalance( SSN);
+                        Function.ShowBalance(Function.selectCustomer());
                         break;
                     }
                     case 10:{
-                        Function.Transfer( SSN);
+                        Function.Transfer(Function.selectCustomer());
                         break;
                     }
                     case 11:{

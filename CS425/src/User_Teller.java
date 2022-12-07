@@ -15,23 +15,23 @@ public class User_Teller {
             int action = scan.nextInt();
             switch(action){
                     case 1:{
-                        Function.Withdrawl(SSN);
+                        //Function.Withdrawl(Function.selectCustomer());
                         break;
                     }
                     case 2:{
-                        Function.Deposit(SSN);
+                        //Function.Deposit(Function.selectCustomer());
                         break;
                     }
                     case 3:{
-                        Function.ShowBalance(SSN);
+                        Function.ShowBalance(Function.selectCustomer());
                         break;
                     }
                     case 4:{
-                        Function.ShowStatment(SSN);
+                        //Function.ShowStatement(Function.selectCustomer());
                         break;
                     }
                     case 5:{
-                        Function.Transfer(SSN);
+                        Function.Transfer(Function.selectCustomer());
                         break;
                     }
                     case 6:{
