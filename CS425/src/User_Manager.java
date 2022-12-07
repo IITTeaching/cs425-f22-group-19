@@ -23,16 +23,35 @@ public class User_Manager {
             int action = scan.nextInt();
             switch(action){
                     case 1:{
-                        //Function.updateInterest(Function.selectCustomer());
+                        /* To Update the interest rate call the function with manager's SSN and new interest rate.
+                                Ex) updateInterest(123456789, 1.35);
+                           Ask to manager which account id update the interest rate.
+                        */
+                        System.out.println("What is new Interest rate?");
+                        float newInterest = scan.nextFloat();
+                        Function.updateInterest(SSN, newInterest);
                         break;
                     }
                     case 2:{
-                        
-                        //Function.updateAccountFee(Function.selectCustomer());
+                        /*
+                           To Update the Account fee function with manager SSN and new monthly account fee.
+                               Ex) updateAccountFee(123456789, 3);
+                           Ask manager which account id update the monthly account fee.
+                        */
+                        System.out.println("What is new Monthly Fee?");
+                        int newAccountFee = scan.nextInt();
+                        Function.updateAccountFee(SSN, newAccountFee);
                         break;
                     }
                     case 3:{
-                        //Function.updateOverdraft(Function.selectCustomer());
+                        /*
+                           To Update the Overdraft rate call the function with manager SSN and new overdraft fee.
+                              Ex) updateOverdraft(123456789, 3);
+                           Ask manager which account id update the Overdraft fee.
+                        */
+                        System.out.println("What is new Overdraft fee?");
+                        int newOverdraft = scan.nextInt();
+                        Function.updateOverdraft(SSN, newOverdraft);
                         break;
                     }
                     case 4:{

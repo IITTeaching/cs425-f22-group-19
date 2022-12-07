@@ -205,7 +205,7 @@ public class Function {
    }
 
    // FINISHED
-   public static void Withdrawl(int SSN) {
+   public static void Withdrawal(int SSN) {
        Hashtable<Integer, Float> accounts = new Hashtable<>();
        float newBal;
        float amount;
@@ -413,16 +413,29 @@ public class Function {
    /* To Update the interest rate call the function with manager SSN and new interest rate.
         Ex) updateInterest(123456789, 1.35);
       Ask to manager which account id update the interest rate.
+      If Costumer's home branch and manager's home branch is different,
+      manager cannot update the interest rate.
     */
    public static void updateInterest(int SSN, float newInterest) throws Exception {
        int branch = 0;
        float interest;
+       int custSSN;
        int account;
        Scanner input = new Scanner(System.in);
 
        try {
+           custSSN = selectCustomer();
+           PreparedStatement pStmt3 = Main.c.prepareStatement("SELECT * FROM account WHERE ssn = ?;");
+           pStmt3.setInt(1, custSSN);
+           ResultSet r3 = pStmt3.executeQuery();
+
            System.out.println("Which account id want to change 'Interest Rate'?");
+           while (r3.next()) {
+               System.out.println("Account ID: " + r3.getInt("account_id"));
+           }
+           r3.close();
            account = input.nextInt();
+
            PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT* from employee WHERE (ssn = ? AND role = ?);");
            PreparedStatement pStmt2 = Main.c.prepareStatement("SELECT * FROM account WHERE account_id = ?;");
            pStmt1.setInt(1, SSN);
@@ -431,11 +444,9 @@ public class Function {
            ResultSet r1 = pStmt1.executeQuery();
            ResultSet r2 = pStmt2.executeQuery();
 
-           while (r1.next() && r2.next()) {
+           while (r2.next()) {
                branch = r2.getInt("home_branch");
-               interest = r2.getFloat("interest_rate");
            }
-           r1.close();
            r2.close();
 
            /* Check Manager's home branch and customers' account home branch
@@ -465,19 +476,32 @@ public class Function {
    }
 
     /*
-       To Update the interest rate call the function with manager SSN and new overdraft fee.
+       To Update the Overdraft rate call the function with manager SSN and new overdraft fee.
          Ex) updateOverdraft(123456789, 3);
        Ask manager which account id update the Overdraft fee.
+       If Costumer's home branch and manager's home branch is different,
+      manager cannot update the overdraft fee.
      */
    public static void updateOverdraft(int SSN, int newOverdraft) throws Exception{
        int branch = 0;
        int overdraft;
+       int custSSN;
        int account;
        Scanner input = new Scanner(System.in);
 
        try {
-           System.out.println("Which account id want to change 'Monthly Account Fee'?");
+           custSSN = selectCustomer();
+           PreparedStatement pStmt3 = Main.c.prepareStatement("SELECT * FROM account WHERE ssn = ?;");
+           pStmt3.setInt(1, custSSN);
+           ResultSet r3 = pStmt3.executeQuery();
+
+           System.out.println("Which account id want to change 'Overdraft Fee'?");
+           while (r3.next()) {
+               System.out.println("Account ID: " + r3.getInt("account_id"));
+           }
+           r3.close();
            account = input.nextInt();
+
            PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT* from employee WHERE (ssn = ? AND role = ?);");
            PreparedStatement pStmt2 = Main.c.prepareStatement("SELECT * FROM account WHERE account_id = ?;");
            pStmt1.setInt(1, SSN);
@@ -486,11 +510,9 @@ public class Function {
            ResultSet r1 = pStmt1.executeQuery();
            ResultSet r2 = pStmt2.executeQuery();
 
-           while (r1.next() && r2.next()) {
+           while (r2.next()) {
                branch = r2.getInt("home_branch");
-               overdraft = r2.getInt("overdraft_fee");
            }
-           r1.close();
            r2.close();
 
            /*
@@ -521,19 +543,31 @@ public class Function {
 }
 
     /*
-      To Update the interest rate call the function with manager SSN and new monthly account fee.
+      To Update the Account fee function with manager SSN and new monthly account fee.
         Ex) updateAccountFee(123456789, 3);
       Ask manager which account id update the monthly account fee.
+      If Costumer's home branch and manager's home branch is different,
+      manager cannot update the monthly account fee.
     */
     public static void updateAccountFee(int SSN, int newAccountFee) throws Exception{
         int branch = 0;
         int fee;
+        int custSSN;
         int account;
         Scanner input = new Scanner(System.in);
 
         try {
-            System.out.println("Which account id want to change 'Monthly Account Fee'?");
+            custSSN = selectCustomer();
+            PreparedStatement pStmt3 = Main.c.prepareStatement("SELECT * FROM account WHERE ssn = ?;");
+            pStmt3.setInt(1, custSSN);
+            ResultSet r3 = pStmt3.executeQuery();
+            System.out.println("Which account id want to change 'Monthly fee'?");
+            while (r3.next()) {
+                System.out.println("Account ID: " + r3.getInt("account_id"));
+            }
+            r3.close();
             account = input.nextInt();
+
             PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT* from employee WHERE (ssn = ? AND role = ?);");
             PreparedStatement pStmt2 = Main.c.prepareStatement("SELECT * FROM account WHERE account_id = ?;");
             pStmt1.setInt(1, SSN);
@@ -542,11 +576,9 @@ public class Function {
             ResultSet r1 = pStmt1.executeQuery();
             ResultSet r2 = pStmt2.executeQuery();
 
-            while (r1.next() && r2.next()) {
+            while (r2.next()) {
                 branch = r2.getInt("home_branch");
-                fee = r2.getInt("monthly_fee");
             }
-            r1.close();
             r2.close();
 
            /*

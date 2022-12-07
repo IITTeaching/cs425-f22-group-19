@@ -26,11 +26,11 @@ public class User_Customer {
                         break;
                     }
                     case 3:{
-                        //Function.Withdrawal(SSN);
+                        Function.Withdrawal(SSN);
                         break;
                     }
                     case 4:{
-                        //Function.Deposit(SSN);
+                        Function.Deposit(SSN);
                         break;
                     }
                     case 5:{
