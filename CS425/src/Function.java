@@ -464,7 +464,59 @@ public class Function {
 
    }
 
-   public static void updateOverdraft(int SSN) throws Exception{
+    /*
+       To Update the interest rate call the function with manager SSN and new overdraft fee.
+         Ex) updateOverdraft(123456789, 3);
+       Ask manager which account id update the Overdraft fee.
+     */
+   public static void updateOverdraft(int SSN, int newOverdraft) throws Exception{
+       int branch = 0;
+       int overdraft;
+       int account;
+       Scanner input = new Scanner(System.in);
+
+       try {
+           System.out.println("Which account id want to change 'Monthly Account Fee'?");
+           account = input.nextInt();
+           PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT* from employee WHERE (ssn = ? AND role = ?);");
+           PreparedStatement pStmt2 = Main.c.prepareStatement("SELECT * FROM account WHERE account_id = ?;");
+           pStmt1.setInt(1, SSN);
+           pStmt1.setInt(2, Integer.parseInt("Manager"));
+           pStmt2.setInt(1, account);
+           ResultSet r1 = pStmt1.executeQuery();
+           ResultSet r2 = pStmt2.executeQuery();
+
+           while (r1.next() && r2.next()) {
+               branch = r2.getInt("home_branch");
+               overdraft = r2.getInt("overdraft_fee");
+           }
+           r1.close();
+           r2.close();
+
+           /*
+              Check Manager's home branch and customers' account home branch
+              If so, then update account's Overdraft fee
+            */
+           if (branch == r1.getInt("home_branch")) {
+               overdraft = newOverdraft;
+               PreparedStatement pStmt = Main.c.prepareStatement("UPDATE account SET overdraft_fee = ? WHERE account_id = ?;");
+               pStmt.setInt(1, overdraft);
+               pStmt.setInt(2, account);
+               pStmt.executeUpdate();
+           }
+
+           else {
+               System.out.println("You cannot update information to the other branch");
+           }
+       } catch (Exception e) {
+           System.err.println("An error occurred: " + e);
+           System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
+                   + Main.JDBC_HOST
+                   + " WITH PORT " + Main.JDBC_PORT
+                   + " AND DATABASE " + Main.JDBC_DB
+                   + " AND USER " + Main.DBUSER
+                   + " WITH PASSWORD " + Main.DBPASSWD);
+       }
 
 }
 
@@ -473,9 +525,9 @@ public class Function {
         Ex) updateAccountFee(123456789, 3);
       Ask manager which account id update the monthly account fee.
     */
-    public static void updateAccountFee(int SSN, float newAccountFee) throws Exception{
+    public static void updateAccountFee(int SSN, int newAccountFee) throws Exception{
         int branch = 0;
-        float fee;
+        int fee;
         int account;
         Scanner input = new Scanner(System.in);
 
@@ -492,7 +544,7 @@ public class Function {
 
             while (r1.next() && r2.next()) {
                 branch = r2.getInt("home_branch");
-                fee = r2.getFloat("monthly_fee");
+                fee = r2.getInt("monthly_fee");
             }
             r1.close();
             r2.close();
@@ -504,7 +556,7 @@ public class Function {
             if (branch == r1.getInt("home_branch")) {
                 fee = newAccountFee;
                 PreparedStatement pStmt = Main.c.prepareStatement("UPDATE account SET monthly_fee = ? WHERE account_id = ?;");
-                pStmt.setFloat(1, fee);
+                pStmt.setInt(1, fee);
                 pStmt.setInt(2, account);
                 pStmt.executeUpdate();
             }
