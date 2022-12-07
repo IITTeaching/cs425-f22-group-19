@@ -1,53 +1,51 @@
 
 import java.util.Scanner;
 public class User_Customer {
-    public static void start() throws Exception{
-        Scanner scan = new Scanner(System.in);
-        boolean loggedIn = false;
-        int SSN = 0;
-
-        while(!loggedIn){
-            System.out.println("Enter SSN or type -1 to cancel: ");
-            SSN = scan.nextInt();
-            if(SSN > 99999999 && SSN < 1000000000){
-                if(Customer.exists(SSN))
-                    loggedIn = true;
-            }
-            else if(SSN == -1)
-                return;
-        }
-
-        while(loggedIn){ 
+    public static void start(int SSN) throws Exception{
+        boolean loggedIn = true;
+        while(loggedIn)
+        {   
+            Scanner scan = new Scanner(System.in);
             System.out.println("Select Option:");	
             System.out.println("Enter 1: Create Account");	
             System.out.println("Enter 2: Remove Account");
             System.out.println("Enter 3: Withdrawal");
             System.out.println("Enter 4: Deposit");
             System.out.println("Enter 5: Check Balance");
-            System.out.println("Enter 6: Logout");
+            System.out.println("Enter 6: Monthly Statment");
+            System.out.println("Enter 7: Make a Transfer");
+            System.out.println("Enter 8: Logout");
             int action = scan.nextInt();
             switch(action){
                     case 1:{
-                        Account.create(SSN);
+                        Function.CreateAccount(SSN);
                         break;
                     }
                     case 2:{
-                        Account.delete(SSN);
+                        Function.RemoveAccount(SSN);
                         break;
                     }
                     case 3:{
-                        
+                        Function.Withdrawal(SSN);
                         break;
                     }
                     case 4:{
-                        
+                        Function.Deposit(SSN);
                         break;
                     }
                     case 5:{
-                        
+                        Function.CheckBalance(SSN);
+                        break;
+                    }
+                    case 6:{
+                        Function.ShowStatment(SSN);
                         break;
                     }
                     case 7:{
+                        Function.Transfer(SSN);
+                        break;
+                    }
+                    case 8:{
                         System.out.println("Logged out.");
                         loggedIn = false;
                         break;
@@ -59,4 +57,5 @@ public class User_Customer {
             }
         }
     }
+       
 }
