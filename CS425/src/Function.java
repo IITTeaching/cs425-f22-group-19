@@ -6,11 +6,12 @@ import java.util.ArrayList;
 
 public class Function {
 
-    // (FINISHED)
+    // SQL function for creating a new account
    public static void CreateAccount(int SSN) throws Exception{
     Scanner scan = new Scanner(System.in);
     int type = -1;
     String accType = "";
+    // Ask the user about the account type
     while(true){
         System.out.println("Select account type. \nEnter 1: Checking \nEnter 2: Savings \nEnter 3: Cancel");
         type = scan.nextInt();
@@ -68,9 +69,10 @@ public class Function {
     }
    }
 
-    // (FINISHED)
+    // Remove an account
    public static void RemoveAccount(int SSN) throws Exception
    {
+    // List all accounts under customer's SSN
     ArrayList<Integer> accounts = new ArrayList<Integer>();
     int accID = -1;
     try 
@@ -85,13 +87,17 @@ public class Function {
             System.out.println("AID: " + r1.getString("account_id") + 
                             " Type: " + r1.getString("type") + 
                             " Balance: " + r1.getString("balance"));
+                            // Add them to list for later access
                             accounts.add(r1.getInt("account_id"));
         }
         r1.close();
+        // Check if list is empty, if it is we dont have any accounts
         if(accounts.isEmpty()){
             System.out.println("You do not have any open accounts.");
             return;
         }
+
+        // Select account to delete
         Scanner input = new Scanner(System.in);
         accID = -1;
         while(!accounts.contains(accID)){
@@ -116,7 +122,7 @@ public class Function {
     }  
    }
 
-    // (FINISHED)
+    // Show balance of all accounts under customer's SSN.
    public static void ShowBalance(int SSN) throws Exception
    {
         ArrayList<Integer> accounts = new ArrayList<Integer>();
@@ -145,7 +151,7 @@ public class Function {
         } 
    }
 
-   // All transactions for a certain month for acustomer
+   // All transactions for a certain month for a customer
    public static void ShowStatement(int SSN) throws Exception{
     Scanner scan = new Scanner(System.in);
     //Finding customer's SSN
@@ -210,7 +216,7 @@ public class Function {
 		}
 		r.close();
         if(count > 0){
-            //System.out.println("Select the customer's account id you want to modify: ");
+           
         }else System.out.println("No transactions found in the last month: " + customerSSN);
     }
     catch (Exception e)
@@ -219,6 +225,7 @@ public class Function {
     }
    }
 
+   // Show all pending transactions for an account
    public static void ShowPendingTransactions(int SSN) throws Exception{
     Scanner scan = new Scanner(System.in);
     
@@ -300,7 +307,7 @@ public class Function {
     
    }
 
-   // FINISHED
+   // Deposit funds into account
    public static void Deposit(int SSN) throws Exception{
        Hashtable<Integer, Float> accounts = new Hashtable<>();
        float newBal;
@@ -309,6 +316,7 @@ public class Function {
        Scanner input = new Scanner(System.in);
 
        try {
+        // Display all accounts a customer has under SSN
            System.out.println("Showing all accounts under customer profile: ");
            PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT * FROM account WHERE ssn = ?;");
            pStmt1.setInt(1, SSN);
@@ -322,11 +330,13 @@ public class Function {
            }
            r1.close();
 
+           // Ask the user which account to deposit into
            int custAcc = -1;
            while(!accounts.containsKey(custAcc)){
             System.out.println("Which account do you deposit to?");
            custAcc = input.nextInt();
            }
+           // Ask how much
            float amount = 0;
            while(amount <= 0){
             System.out.println("How much do you want to deposit?");
@@ -334,6 +344,7 @@ public class Function {
            }
            currBal = accounts.get(custAcc);
 
+           // Update SQL table and creat enew transaction row based on data.
            newBal = currBal + amount;
            accounts.put(custAcc, newBal);
            PreparedStatement pStmt = Main.c.prepareStatement("UPDATE account SET balance = ? WHERE account_id = ?;");
@@ -354,7 +365,7 @@ public class Function {
        }
    }
 
-   // FINISHED
+   // Withdrawl funds from account
    public static void Withdrawal(int SSN) {
        Hashtable<Integer, Float> accounts = new Hashtable<>();
        Hashtable<Integer, Boolean> neg_allow_a = new Hashtable<>();
@@ -365,6 +376,7 @@ public class Function {
        Scanner input = new Scanner(System.in);
 
        try {
+        // Display all accounts under customer SSN 
            System.out.println("Showing all accounts under customer profile: ");
            PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT* FROM account WHERE ssn = ?;");
            pStmt1.setInt(1, SSN);
@@ -379,11 +391,13 @@ public class Function {
            }
            r1.close();
 
+           // Select account to withdrawl from.
            int custAcc = -1;
            while(!accounts.containsKey(custAcc)){
             System.out.println("Which account do you want to withdrawl from?");
            custAcc = input.nextInt();
            }
+           // Ask how much to withdrawal
            float amount = 0;
            while(amount <= 0){
             System.out.println("How much do you want to withdrawl?");
@@ -436,14 +450,14 @@ public class Function {
        }
    }
 
-  // (FINISHED)
+  // Transfer funds from one account to another account
    public static void Transfer(int SSN) throws Exception{
     ArrayList<Integer> accounts = new ArrayList<Integer>();
     int accID_from = -1;
     int accID_to = -1;
     try 
     {
-        // Select account to transfer from
+        // Display all customer accounts that a customer has under their SSN.
         System.out.println("Showing all accounts under customer profile: ");
         PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT* from account WHERE ssn = ?;");
         pStmt1.setInt(1, SSN);
@@ -460,6 +474,7 @@ public class Function {
             System.out.println("You do not have any open accounts.");
             return;
         }
+        // Ask which account to transfer from
         Scanner input = new Scanner(System.in);
         accID_from = -1;
         while(!accounts.contains(accID_from)){
@@ -550,6 +565,7 @@ public class Function {
         else 
             transfer_type = "External Transfer";
 
+            // Update SQL funds for each account and create transaction row 
         PreparedStatement pStmt = Main.c.prepareStatement("UPDATE account SET balance = balance - ? WHERE account_id = ?;");
         pStmt.setFloat(1, transfer_amount);
         pStmt.setInt(2, accID_from);
@@ -575,17 +591,24 @@ public class Function {
 
    }
 
+    /*
+       Ask manager which account id update the Interest
+       If Costumer's home branch and manager's home branch is different,
+      manager cannot update the overdraft fee.
+     */
    public static void updateInterest(int SSN) throws Exception{
+    if(find_branch(Main.loggedinSSN) != find_branch(SSN)){
+        System.out.println("Costumer's home branch and manager's home branch is different, manager cannot update the interest.");
+        return;
+    }
     Scanner scan = new Scanner(System.in);
-    
-    //Finding customer's SSN
-    //System.out.println("Please ENTER the customer's SSN or -1 to cancel");
     int customerSSN;
     int accID;
     customerSSN = SSN;
     ArrayList<Integer> accounts = new ArrayList<Integer>();
     try
     {
+        // Display all accounts info
         accounts.clear();
         PreparedStatement pStmt = Main.c.prepareStatement("SELECT * from account WHERE ssn = ?;");
         pStmt.setInt(1, customerSSN);
@@ -616,6 +639,7 @@ public class Function {
     {
         System.out.println("Error: " + e.getMessage());
     }
+    // Ask which account to update interest for
     accID = -1;
     while(!accounts.contains(accID)){
         System.out.println("Select account you want to update interest for: ");
@@ -642,13 +666,15 @@ public class Function {
    }
 
     /*
-       To Update the Overdraft rate call the function with manager SSN and new overdraft fee.
-         Ex) updateOverdraft(123456789, 3);
        Ask manager which account id update the Overdraft fee.
        If Costumer's home branch and manager's home branch is different,
       manager cannot update the overdraft fee.
      */
    public static void updateOverdraft(int SSN) throws Exception{
+        if(find_branch(Main.loggedinSSN) != find_branch(SSN)){
+            System.out.println("Costumer's home branch and manager's home branch is different, manager cannot update the overdraft fee.");
+            return;
+        }
        int branch = 0;
        int overdraft;
        int custSSN;
@@ -665,7 +691,7 @@ public class Function {
 
            System.out.println("Which account id want to change 'Overdraft Fee'?");
            while (r3.next()) {
-               System.out.println("Account ID: " + r3.getInt("account_id"));
+               System.out.println("Account ID: " + r3.getInt("account_id")); 
            }
            r3.close();
            account = input.nextInt();
@@ -683,13 +709,15 @@ public class Function {
 }
 
     /*
-      To Update the Account fee function with manager SSN and new monthly account fee.
-        Ex) updateAccountFee(123456789, 3);
       Ask manager which account id update the monthly account fee.
       If Costumer's home branch and manager's home branch is different,
       manager cannot update the monthly account fee.
     */
     public static void updateAccountFee(int SSN) throws Exception{
+        if(find_branch(Main.loggedinSSN) != find_branch(SSN)){
+            System.out.println("Costumer's home branch and manager's home branch is different, manager cannot update the account fee.");
+            return;
+        }
         int branch = 0;
         int fee;
         int custSSN;
@@ -719,7 +747,7 @@ public class Function {
         }
     }
 
-     // (FINISHED)
+     // Ask the user for a customer id, used for tellers and managers before exeucting functions to get a speciifc SSN.
     public static int selectCustomer(){
         Scanner scan = new Scanner(System.in);
         int SSN = -1;
@@ -748,4 +776,41 @@ public class Function {
         }
         return SSN;
     }
+
+    public static int find_branch(int SSN)
+    {
+            try 
+            {	int count = 0;	
+                int count2 = 0;	
+                PreparedStatement pStmt = Main.c.prepareStatement("SELECT* from customer WHERE ssn = ?");
+                pStmt.setInt(1, SSN);
+                pStmt.executeQuery();
+                ResultSet r1 = pStmt.executeQuery();
+                
+                while(r1.next()){
+                    count++;
+                    //System.out.println(r1.getInt("home_branch"));	
+                    return r1.getInt("home_branch");
+                }
+                r1.close();
+                if(count < 1){
+                    PreparedStatement pStmt2 = Main.c.prepareStatement("SELECT* from employee WHERE ssn = ?");
+                    pStmt2.setInt(1, SSN);
+                    pStmt2.executeQuery();
+                    ResultSet r2 = pStmt2.executeQuery();     
+                    while(r2.next()){
+                        count2++;
+                        //System.out.println(r2.getInt("branch"));	
+                        return r2.getInt("branch");
+                    }
+                    r2.close();
+                }
+                  	
+            } catch (Exception e) 
+            {
+                System.out.println("Failed to get branch id from SSN: " + e.getMessage());	
+                return -1;
+            }
+        return -1;
+    } 
 }

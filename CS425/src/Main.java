@@ -18,6 +18,7 @@ public class Main {
 	public static final String DBPASSWD = "abc123";
     public static Connection c;
 	public static Statement s;
+	public static int loggedinSSN = 0;
 
 	public static void main (String[] args) throws Exception {
 		try {
@@ -99,6 +100,7 @@ public class Main {
 				{
 					System.out.println("Enter Employee SSN:");	
 					SSN = scan.nextInt();
+					loggedinSSN = SSN;
 					try {					
 						PreparedStatement pStmt = Main.c.prepareStatement("SELECT* from employee WHERE ssn = ?");
 						pStmt.setInt(1, SSN);
