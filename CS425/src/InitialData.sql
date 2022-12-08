@@ -1,4 +1,4 @@
-DELETE from accounts;
+DELETE from account;
 DELETE from customer;
 DELETE from employee;
 DELETE from branch;

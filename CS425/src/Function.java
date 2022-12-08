@@ -77,7 +77,7 @@ public class Function {
     {
         
         System.out.println("Showing all accounts under customer profile: ");
-        PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT* from account WHERE ssn = ?;");
+        PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT* FROM account WHERE ssn = ?;");
         pStmt1.setInt(1, SSN);
         ResultSet r1 = pStmt1.executeQuery();
         accounts.clear();
@@ -150,154 +150,125 @@ public class Function {
 
    }
 
+   // FINISHED
    public static void Deposit(int SSN) throws Exception{
-    // double newBal;
-    //     double amount;
+       Hashtable<Integer, Float> accounts = new Hashtable<>();
+       float newBal;
+       float amount;
+       float currBal;
+       int custAcc;
 
-    //     Scanner input = new Scanner(System.in);
+       Scanner input = new Scanner(System.in);
 
-    //     Account custAcc = accounts.get(SSN);
-    //     System.out.println("Is this account number to deposit?" + custAcc);
-    //     System.out.println("1. Yes  2. No");
-    //     int action = input.nextInt();
-    //     switch (action) {
-    //         case 1 -> {
-    //             Account account = new Account(Integer.parseInt(custAcc.toString()));
-    //             double accAmoun = balances.get(custAcc);
-    //             System.out.println("How much you want to deposit?");
-    //             amount = input.nextDouble();
+       try {
+           System.out.println("Showing all accounts under customer profile: ");
+           PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT * FROM account WHERE ssn = ?;");
+           pStmt1.setInt(1, SSN);
+           ResultSet r1 = pStmt1.executeQuery();
 
-    //             newBal = accAmoun + amount;
-    //             balances.put(account, newBal);
+           while(r1.next()){
+               System.out.println("AID: " + r1.getString("account_id") +
+                       " Type: " + r1.getString("type") +
+                       " Balance: " + r1.getFloat("balance"));
+               accounts.put(r1.getInt("account_id"), r1.getFloat("balance"));
+           }
+           r1.close();
 
-    //             // Update SQL Database
-    //             try {
-    //                 Main.s.executeUpdate("UPDATE balance = newBal FROM account WHERE account_id = custAcc;");
-    //                 Main.c.commit();
-    //             } catch (Exception e) {
-    //                 System.err.println("An error occurred: " + e);
-    //                 System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
-    //                         + Main.JDBC_HOST
-    //                         + " WITH PORT " + Main.JDBC_PORT
-    //                         + " AND DATABASE " + Main.JDBC_DB
-    //                         + " AND USER " + Main.DBUSER
-    //                         + " WITH PASSWORD " + Main.DBPASSWD);
-    //             }
-    //         }
-    //         case 2 -> {
-    //             System.out.println("Please ENTER your account number: ");
-    //             int depAcc = input.nextInt();
-    //             Account account = new Account(depAcc);
+           System.out.println("Which account do you deposit to?");
+           custAcc = input.nextInt();
+           System.out.println("How much do you want to deposit?");
+           amount = input.nextFloat();
+           currBal = accounts.get(custAcc);
 
-    //             System.out.println("How much you want to deposit?");
-    //             amount = input.nextDouble();
+           newBal = currBal + amount;
+           accounts.put(custAcc, newBal);
+           PreparedStatement pStmt = Main.c.prepareStatement("UPDATE account SET balance = ? WHERE account_id = ?;");
+           pStmt.setFloat(1, newBal);
+           pStmt.setInt(2, custAcc);
+           pStmt.executeUpdate();
 
-    //             double accAmount = balances.get(depAcc);
+           // Display new balance
+           while(r1.next()) {
+               System.out.println("Your account " + custAcc + " New balance is " + r1.getFloat("balance"));
+           }
+           r1.close();
 
-    //             newBal = accAmount + amount;
-    //             balances.put(account, newBal);
-
-    //             // Update SQL Database
-    //             try {
-    //                 Main.s.executeUpdate("UPDATE balance = newBal FROM account WHERE account_id = depAcc;");
-    //                 Main.c.commit();
-    //             } catch (Exception e) {
-    //                 System.err.println("An error occurred: " + e);
-    //                 System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
-    //                         + Main.JDBC_HOST
-    //                         + " WITH PORT " + Main.JDBC_PORT
-    //                         + " AND DATABASE " + Main.JDBC_DB
-    //                         + " AND USER " + Main.DBUSER
-    //                         + " WITH PASSWORD " + Main.DBPASSWD);
-    //             }
-    //         }
-
-    //         default ->
-    //                 System.out.println("Invalid option selected, please try again.");
-    //     }
-
+       } catch (Exception e) {
+           System.err.println("An error occurred: " + e);
+           System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
+                   + Main.JDBC_HOST
+                   + " WITH PORT " + Main.JDBC_PORT
+                   + " AND DATABASE " + Main.JDBC_DB
+                   + " AND USER " + Main.DBUSER
+                   + " WITH PASSWORD " + Main.DBPASSWD);
+       }
    }
-   public static void Withdrawl(int SSN) throws Exception{
-    // double newBal;
-    //     double amount;
 
-    //     Scanner input = new Scanner(System.in);
+   // FINISHED
+   public static void Withdrawal(int SSN) {
+       Hashtable<Integer, Float> accounts = new Hashtable<>();
+       float newBal;
+       float amount;
+       float currBal;
+       int custAcc;
+       int branch;
 
-    //     Account custAcc = accounts.get(SSN);
-    //     System.out.println("Is this account number to deposite?" + custAcc);
-    //     System.out.println("1. Yes  2. No");
-    //     int action = input.nextInt();
+       Scanner input = new Scanner(System.in);
 
-    //     switch (action) {
-    //         case 1 -> {
-    //             Account account = new Account(Integer.parseInt(custAcc.toString()));
-    //             double accAmoun = balances.get(custAcc);
-    //             System.out.println("How much you want to withdrawal?");
-    //             amount = input.nextDouble();
+       try {
+           System.out.println("Showing all accounts under customer profile: ");
+           PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT* FROM account WHERE ssn = ?;");
+           PreparedStatement pStmt2 = Main.c.prepareStatement("SELECT * FROM customers WHERE  ssn = ?;");
+           pStmt1.setInt(1, SSN);
+           pStmt2.setInt(1, SSN);
+           ResultSet r1 = pStmt1.executeQuery();
+           ResultSet r2 = pStmt2.executeQuery();
 
-    //             if (accAmoun >= amount) {
-    //                 newBal = accAmoun - amount;
-    //                 balances.put(account, newBal);
-    //             } else if (!negAllow)
-    //                 System.out.println("Cannot withdrawal " + amount + ", it will be overdraft.");
+           while(r1.next() && r2.next()){
+               System.out.println("AID: " + r1.getString("account_id") +
+                       " Type: " + r1.getString("type") +
+                       " Balance: " + r1.getFloat("balance"));
+               accounts.put(r1.getInt("account_id"), r1.getDouble("balance"));
+               branch = r2.getInt("home_branch");
+           }
+           r1.close();
+           r2.close();
 
-    //             else {
-    //                 newBal = accAmoun - amount;
-    //                 balances.put(account, newBal);
-    //             }
+           System.out.println("Which account do you withdrawl from?");
+           custAcc = input.nextInt();
+           System.out.println("How much do you want to withdrawl?");
+           amount = input.nextFloat();
+           currBal = accounts.get(custAcc);
+           newBal = currBal - amount;
+           boolean negAllow1 = r1.getBoolean("negAllow");
 
-    //             // Update SQL Database
-    //             try {
-    //                 Main.s.executeUpdate("UPDATE balance = newBal FROM account WHERE account_id = custAcc;");
-    //                 Main.c.commit();
-    //             } catch (Exception e) {
-    //                 System.err.println("An error occurred: " + e);
-    //                 System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
-    //                         + Main.JDBC_HOST
-    //                         + " WITH PORT " + Main.JDBC_PORT
-    //                         + " AND DATABASE " + Main.JDBC_DB
-    //                         + " AND USER " + Main.DBUSER
-    //                         + " WITH PASSWORD " + Main.DBPASSWD);
-    //             }
-    //         }
-    //         case 2 -> {
-    //             System.out.println("Please ENTER your account number: ");
-    //             int withAcc = input.nextInt();
-    //             Account account = new Account(withAcc);
-    //             double accAmoun = balances.get(withAcc);
+           if (currBal >= amount) {
+               newBal = currBal - amount;
+               accounts.put(custAcc, newBal);
+               PreparedStatement pStmt = Main.c.prepareStatement("UPDATE account SET balance = ? WHERE account_id = ?;");
+               pStmt.setFloat(1, newBal);
+               pStmt.setInt(2, custAcc);
+               pStmt.executeUpdate();
+           } else if (!r1.getBoolean("negAllow"))
+               System.out.println("Cannot withdrawal " + amount + ", it will be overdraft.");
 
-    //             System.out.println("How much you want to withdrawal?");
-    //             amount = input.nextDouble();
-
-    //             // Check the balance is enough
-    //             if (accAmoun >= amount) {
-    //                 newBal = accAmoun - amount;
-    //                 balances.put(account, newBal);
-    //             } else if (!negAllow)
-    //                 System.out.println("Cannot withdrawal " + amount + ", it will be overdraft.");
-
-    //             else {
-    //                 newBal = accAmoun - amount;
-    //                 balances.put(account, newBal);
-    //             }
-
-    //             // Update SQL Database
-    //             try {
-    //                 Main.s.executeUpdate("UPDATE balance = newBal FROM account WHERE account_id = withAcc;");
-    //                 Main.c.commit();
-    //             } catch (Exception e) {
-    //                 System.err.println("An error occurred: " + e);
-    //                 System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
-    //                         + Main.JDBC_HOST
-    //                         + " WITH PORT " + Main.JDBC_PORT
-    //                         + " AND DATABASE " + Main.JDBC_DB
-    //                         + " AND USER " + Main.DBUSER
-    //                         + " WITH PASSWORD " + Main.DBPASSWD);
-    //             }
-    //         }
-    //         default ->
-    //                 System.out.println("Invalid option selected, please try again.");
-    //     }
+           else {
+               newBal = currBal - amount;
+               accounts.put(custAcc, newBal);
+               PreparedStatement pStmt = Main.c.prepareStatement("UPDATE account SET balance = ? WHERE account_id = ?;");
+               pStmt.setFloat(1, newBal);
+               pStmt.setInt(2, custAcc);
+               pStmt.executeUpdate();
+           }
+       } catch (Exception e) {
+           System.err.println("An error occurred: " + e);
+           System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
+                   + Main.JDBC_HOST
+                   + " WITH PORT " + Main.JDBC_PORT
+                   + " AND DATABASE " + Main.JDBC_DB
+                   + " AND USER " + Main.DBUSER
+                   + " WITH PASSWORD " + Main.DBPASSWD);
+       }
    }
 
   // (FINISHED)
@@ -505,12 +476,136 @@ public class Function {
         }
    }
 
-   public static void updateOverdraft(int SSN) throws Exception{
+    /*
+       To Update the Overdraft rate call the function with manager SSN and new overdraft fee.
+         Ex) updateOverdraft(123456789, 3);
+       Ask manager which account id update the Overdraft fee.
+       If Costumer's home branch and manager's home branch is different,
+      manager cannot update the overdraft fee.
+     */
+   public static void updateOverdraft(int SSN, int newOverdraft) throws Exception{
+       int branch = 0;
+       int overdraft;
+       int custSSN;
+       int account;
+       Scanner input = new Scanner(System.in);
+
+       try {
+           custSSN = selectCustomer();
+           PreparedStatement pStmt3 = Main.c.prepareStatement("SELECT * FROM account WHERE ssn = ?;");
+           pStmt3.setInt(1, custSSN);
+           ResultSet r3 = pStmt3.executeQuery();
+
+           System.out.println("Which account id want to change 'Overdraft Fee'?");
+           while (r3.next()) {
+               System.out.println("Account ID: " + r3.getInt("account_id"));
+           }
+           r3.close();
+           account = input.nextInt();
+
+           PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT* from employee WHERE (ssn = ? AND role = ?);");
+           PreparedStatement pStmt2 = Main.c.prepareStatement("SELECT * FROM account WHERE account_id = ?;");
+           pStmt1.setInt(1, SSN);
+           pStmt1.setInt(2, Integer.parseInt("Manager"));
+           pStmt2.setInt(1, account);
+           ResultSet r1 = pStmt1.executeQuery();
+           ResultSet r2 = pStmt2.executeQuery();
+
+           while (r2.next()) {
+               branch = r2.getInt("home_branch");
+           }
+           r2.close();
+
+           /*
+              Check Manager's home branch and customers' account home branch
+              If so, then update account's Overdraft fee
+            */
+           if (branch == r1.getInt("home_branch")) {
+               overdraft = newOverdraft;
+               PreparedStatement pStmt = Main.c.prepareStatement("UPDATE account SET overdraft_fee = ? WHERE account_id = ?;");
+               pStmt.setInt(1, overdraft);
+               pStmt.setInt(2, account);
+               pStmt.executeUpdate();
+           }
+
+           else {
+               System.out.println("You cannot update information to the other branch");
+           }
+       } catch (Exception e) {
+           System.err.println("An error occurred: " + e);
+           System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
+                   + Main.JDBC_HOST
+                   + " WITH PORT " + Main.JDBC_PORT
+                   + " AND DATABASE " + Main.JDBC_DB
+                   + " AND USER " + Main.DBUSER
+                   + " WITH PASSWORD " + Main.DBPASSWD);
+       }
 
 }
 
-    public static void updateAccountFee(int SSN) throws Exception{
+    /*
+      To Update the Account fee function with manager SSN and new monthly account fee.
+        Ex) updateAccountFee(123456789, 3);
+      Ask manager which account id update the monthly account fee.
+      If Costumer's home branch and manager's home branch is different,
+      manager cannot update the monthly account fee.
+    */
+    public static void updateAccountFee(int SSN, int newAccountFee) throws Exception{
+        int branch = 0;
+        int fee;
+        int custSSN;
+        int account;
+        Scanner input = new Scanner(System.in);
 
+        try {
+            custSSN = selectCustomer();
+            PreparedStatement pStmt3 = Main.c.prepareStatement("SELECT * FROM account WHERE ssn = ?;");
+            pStmt3.setInt(1, custSSN);
+            ResultSet r3 = pStmt3.executeQuery();
+            System.out.println("Which account id want to change 'Monthly fee'?");
+            while (r3.next()) {
+                System.out.println("Account ID: " + r3.getInt("account_id"));
+            }
+            r3.close();
+            account = input.nextInt();
+
+            PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT* from employee WHERE (ssn = ? AND role = ?);");
+            PreparedStatement pStmt2 = Main.c.prepareStatement("SELECT * FROM account WHERE account_id = ?;");
+            pStmt1.setInt(1, SSN);
+            pStmt1.setInt(2, Integer.parseInt("Manager"));
+            pStmt2.setInt(1, account);
+            ResultSet r1 = pStmt1.executeQuery();
+            ResultSet r2 = pStmt2.executeQuery();
+
+            while (r2.next()) {
+                branch = r2.getInt("home_branch");
+            }
+            r2.close();
+
+           /*
+              Check Manager's home branch and customers' account home branch
+              If so, then update account's Monthly account fee
+            */
+            if (branch == r1.getInt("home_branch")) {
+                fee = newAccountFee;
+                PreparedStatement pStmt = Main.c.prepareStatement("UPDATE account SET monthly_fee = ? WHERE account_id = ?;");
+                pStmt.setInt(1, fee);
+                pStmt.setInt(2, account);
+                pStmt.executeUpdate();
+            }
+
+            else {
+                System.out.println("You cannot update information to the other branch");
+            }
+        } catch (Exception e) {
+            System.err.println("An error occurred: " + e);
+            System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
+                    + Main.JDBC_HOST
+                    + " WITH PORT " + Main.JDBC_PORT
+                    + " AND DATABASE " + Main.JDBC_DB
+                    + " AND USER " + Main.DBUSER
+                    + " WITH PASSWORD " + Main.DBPASSWD);
+        }
     }
 
      // (FINISHED)

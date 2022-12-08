@@ -15,11 +15,11 @@ public class User_Teller {
             int action = scan.nextInt();
             switch(action){
                     case 1:{
-                        //Function.Withdrawl(Function.selectCustomer());
+                        Function.Withdrawal(Function.selectCustomer());
                         break;
                     }
                     case 2:{
-                        //Function.Deposit(Function.selectCustomer());
+                        Function.Deposit(Function.selectCustomer());
                         break;
                     }
                     case 3:{
