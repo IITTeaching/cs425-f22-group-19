@@ -23,7 +23,7 @@ public class User_Manager {
             int action = scan.nextInt();
             switch(action){
                     case 1:{
-                        //Function.updateInterest(Function.selectCustomer());
+                        Function.updateInterest(Function.selectCustomer());
                         break;
                     }
                     case 2:{

@@ -440,7 +440,69 @@ public class Function {
    }
 
    public static void updateInterest(int SSN) throws Exception{
+    Scanner scan = new Scanner(System.in);
+    
+    //Finding customer's SSN
+    //System.out.println("Please ENTER the customer's SSN or -1 to cancel");
+    int customerSSN;
+    int accID;
+    customerSSN = SSN;
+    ArrayList<Integer> accounts = new ArrayList<Integer>();
+    try
+    {
+        accounts.clear();
+        PreparedStatement pStmt = Main.c.prepareStatement("SELECT * from account WHERE ssn = ?;");
+        pStmt.setInt(1, customerSSN);
+        pStmt.executeQuery();
+        ResultSet r = pStmt.executeQuery();
+        int count = 0;
+        while(r.next()){
+            count++;
+            accID = r.getInt("account_id");
+            int ssn = r.getInt("ssn");
+            float balance = r.getFloat("balance");
+            String type = r.getString("type");
+            float ir = r.getFloat("interest_rate");
+            int of = r.getInt("overdraft_fee");
+            int mf = r.getInt("monthly_fee");
+            accounts.add(r.getInt("account_id"));
+            System.out.println("AccID: " + accID + "    SSN: " + ssn + "    Balance: " + balance 
+            + "    Type: " + type  + "    Interest Rate: " + ir  + "    Overdraft Fee: " + of + "    Monthly Fee: " + mf);
 
+		}
+		r.close();
+        if(count <= 0){
+            System.out.println("This customer has no accounts: " + customerSSN);
+            return;
+        }
+    }
+    catch (Exception e)
+    {
+        System.out.println("Error: " + e.getMessage());
+    }
+    accID = -1;
+    while(!accounts.contains(accID)){
+        System.out.println("Select account you want to update interest for: ");
+        accID = scan.nextInt();
+        if(!accounts.contains(accID))
+            System.out.println("Account with AID: " + accID + " does not exist, please try again.");
+    }
+//Updating the interest rate
+    System.out.println("Enter the new interest rate for the account");
+    float newRate = 0;
+    newRate = scan.nextFloat();
+    try
+        {
+            PreparedStatement pStmt = Main.c.prepareStatement("UPDATE account SET interest_rate = ? WHERE account_id = ?;");
+            pStmt.setFloat(1, newRate);
+            pStmt.setInt(2, accID);
+            pStmt.executeUpdate();
+            System.out.println("Customer's interest rate updated successfully to " + newRate + "%.");
+        }
+        catch (Exception e)
+        {
+            System.out.println("Customer's interest rate was NOT updated successfully, error:"  + e.getMessage());
+        }
    }
 
    public static void updateOverdraft(int SSN) throws Exception{
