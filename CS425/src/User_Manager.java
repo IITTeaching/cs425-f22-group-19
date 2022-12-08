@@ -19,7 +19,8 @@ public class User_Manager {
             System.out.println("Enter 8: Deposit");
             System.out.println("Enter 9: Check Balance");
             System.out.println("Enter 10: Make a Transfer");
-            System.out.println("Enter 11: Logout");
+            System.out.println("Enter 11: Show Pending Transactions");
+            System.out.println("Enter 12: Logout");
             int action = scan.nextInt();
             switch(action){
                     case 1:{
@@ -27,29 +28,15 @@ public class User_Manager {
                         break;
                     }
                     case 2:{
-                        /*
-                           To Update the Account fee function with manager SSN and new monthly account fee.
-                               Ex) updateAccountFee(123456789, 3);
-                           Ask manager which account id update the monthly account fee.
-                        */
-                        System.out.println("What is new Monthly Fee?");
-                        int newAccountFee = scan.nextInt();
-                        Function.updateAccountFee(SSN, newAccountFee);
+                        Function.updateAccountFee(Function.selectCustomer());
                         break;
                     }
                     case 3:{
-                        /*
-                           To Update the Overdraft rate call the function with manager SSN and new overdraft fee.
-                              Ex) updateOverdraft(123456789, 3);
-                           Ask manager which account id update the Overdraft fee.
-                        */
-                        System.out.println("What is new Overdraft fee?");
-                        int newOverdraft = scan.nextInt();
-                        Function.updateOverdraft(SSN, newOverdraft);
+                        Function.updateOverdraft(Function.selectCustomer());
                         break;
                     }
                     case 4:{
-                        //Function.ShowStatement(Function.selectCustomer());
+                        Function.ShowStatement(Function.selectCustomer());
                         break;
                     }
                     case 5:{
@@ -62,11 +49,11 @@ public class User_Manager {
                     }
                     case 7:{
                         
-                        //Function.Withdrawl(Function.selectCustomer());
+                        Function.Withdrawal(Function.selectCustomer());
                         break;
                     }
                     case 8:{
-                        //Function.Deposit(Function.selectCustomer());
+                        Function.Deposit(Function.selectCustomer());
                         break;
                     }
                     case 9:{
@@ -78,6 +65,10 @@ public class User_Manager {
                         break;
                     }
                     case 11:{
+                        Function.ShowPendingTransactions(Function.selectCustomer());
+                        break;
+                    }
+                    case 12:{
                        System.out.println("Logged out.");
                        loggedIn = false;
                         break;

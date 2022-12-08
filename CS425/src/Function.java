@@ -147,16 +147,164 @@ public class Function {
 
    // All transactions for a certain month for acustomer
    public static void ShowStatement(int SSN) throws Exception{
+    Scanner scan = new Scanner(System.in);
+    //Finding customer's SSN
+    int customerSSN;
+    int accID;
+    customerSSN = SSN;
+    //select the account you want to display the statement
+    try
+    {
+        PreparedStatement pStmt = Main.c.prepareStatement("SELECT * from account WHERE ssn = ?;");
+        pStmt.setInt(1, customerSSN);
+        pStmt.executeQuery();
+        ResultSet r = pStmt.executeQuery();
+        int count = 0;
+        while(r.next()){
+            count++;
+            accID = r.getInt("account_id");
+            int ssn = r.getInt("ssn");
+            String balance = r.getString("balance");
+            String type = r.getString("type");
+            int ir = r.getInt("interest_rate");
+            int of = r.getInt("overdraft_fee");
+            int mf = r.getInt("monthly_fee");
 
+            System.out.println("Option: " + count + "\t AccID: " + accID + "\t SSN: " + ssn + "\t Balance: " + balance 
+            + "\t Type: " + type  + "\t Interest Rate: " + ir  + "\t Overdraft Fees: " + of + "\t Monthly Fees: " + mf);
+
+		}
+		r.close();
+        if(count > 0){
+            System.out.println("Select the customer's account id you want to modify: ");
+        }else System.out.println("This customer has no accounts: " + customerSSN);
+    }
+    catch (Exception e)
+    {
+        System.out.println("Error: " + e.getMessage());
+    }
+    accID = scan.nextInt();
+    
+    //Display transactions for that account
+    try
+    {
+        PreparedStatement pStmt = Main.c.prepareStatement("SELECT * from transaction WHERE account_id = ? AND EXTRACT(MONTH from transaction_date) = (EXTRACT(MONTH FROM CURRENT_DATE)-1);");
+        pStmt.setInt(1, accID);
+        pStmt.executeQuery();
+        ResultSet r = pStmt.executeQuery();
+        int count = 0;
+        while(r.next()){
+            count++;
+            int transID = r.getInt("transaction_id");
+            accID = r.getInt("account_id");
+            String type = r.getString("type");
+            String amount = r.getString("amount");
+            String date = r.getString("transaction_date");
+            int sender = r.getInt("account_sender");
+            int recipient = r.getInt("account_recipient");
+            
+
+            System.out.println("\t Transaction ID: " + transID + "\t accID: " + accID + "\t Amount: " + amount 
+            + "\t Type: " + type  + "\t Date: " + date  + "\t Sender: " + sender + "\t Recipient: " + recipient);
+
+		}
+		r.close();
+        if(count > 0){
+            //System.out.println("Select the customer's account id you want to modify: ");
+        }else System.out.println("No transactions found in the last month: " + customerSSN);
+    }
+    catch (Exception e)
+    {
+        System.out.println("Error: " + e.getMessage());
+    }
+   }
+
+   public static void ShowPendingTransactions(int SSN) throws Exception{
+    Scanner scan = new Scanner(System.in);
+    
+    //Finding customer's SSN
+    int customerSSN;
+    int accID;
+
+    customerSSN = SSN;
+    //select the account you want to display the statement
+    try
+    {
+        PreparedStatement pStmt = Main.c.prepareStatement("SELECT * from account WHERE ssn = ?;");
+        pStmt.setInt(1, customerSSN);
+        pStmt.executeQuery();
+        ResultSet r = pStmt.executeQuery();
+        int count = 0;
+        while(r.next()){
+            count++;
+            accID = r.getInt("account_id");
+            int ssn = r.getInt("ssn");
+            String balance = r.getString("balance");
+            String type = r.getString("type");
+            int ir = r.getInt("interest_rate");
+            int of = r.getInt("overdraft_fee");
+            int mf = r.getInt("monthly_fee");
+
+            System.out.println("Option: " + count + "\t AccID: " + accID + "\t SSN: " + ssn + "\t Balance: " + balance 
+            + "\t Type: " + type  + "\t Interest Rate: " + ir  + "\t Overdraft Fees: " + of + "\t Monthly Fees: " + mf);
+
+		}
+		r.close();
+        if(count > 0){
+            System.out.println("Select the customer's account you want to view pending transactions for: ");
+        }else System.out.println("This customer has no accounts.");
+    }
+    catch (Exception e)
+    {
+        System.out.println("Error: " + e.getMessage());
+    }
+    accID = scan.nextInt();
+    
+    //Display transactions for that account
+    try
+    {
+        PreparedStatement pStmt = Main.c.prepareStatement("SELECT * from transaction WHERE account_id = ? AND EXTRACT(MONTH from transaction_date) = (EXTRACT(MONTH FROM CURRENT_DATE));");
+        pStmt.setInt(1, accID);
+        pStmt.executeQuery();
+        ResultSet r = pStmt.executeQuery();
+        int count = 0;
+        while(r.next()){
+            count++;
+            int transID = r.getInt("transaction_id");
+            accID = r.getInt("account_id");
+            String type = r.getString("type");
+            String amount = r.getString("amount");
+            String date = r.getString("transaction_date");
+            int sender = r.getInt("account_sender");
+            int recipient = r.getInt("account_recipient");
+            
+
+            System.out.println("\t Transaction ID: " + transID + "\t accID: " + accID + "\t Amount: " + amount 
+            + "\t Type: " + type  + "\t Date: " + date  + "\t Sender: " + sender + "\t Recipient: " + recipient);
+
+		}
+		r.close();
+        if(count > 0){
+            //System.out.println("Select the customer's account id you want to modify: ");
+        }else System.out.println("No transactions found in the last month: " + customerSSN);
+    }
+    catch (Exception e)
+    {
+        System.out.println("Error: " + e.getMessage());
+    }
+    System.out.println("Enter -1 to exit: ");
+    if(scan.nextInt() == -1){
+        scan.close();
+        return;
+    }
+    
    }
 
    // FINISHED
    public static void Deposit(int SSN) throws Exception{
        Hashtable<Integer, Float> accounts = new Hashtable<>();
        float newBal;
-       float amount;
        float currBal;
-       int custAcc;
 
        Scanner input = new Scanner(System.in);
 
@@ -174,10 +322,16 @@ public class Function {
            }
            r1.close();
 
-           System.out.println("Which account do you deposit to?");
+           int custAcc = -1;
+           while(!accounts.containsKey(custAcc)){
+            System.out.println("Which account do you deposit to?");
            custAcc = input.nextInt();
-           System.out.println("How much do you want to deposit?");
-           amount = input.nextFloat();
+           }
+           float amount = 0;
+           while(amount <= 0){
+            System.out.println("How much do you want to deposit?");
+            amount = input.nextFloat();
+           }
            currBal = accounts.get(custAcc);
 
            newBal = currBal + amount;
@@ -186,31 +340,26 @@ public class Function {
            pStmt.setFloat(1, newBal);
            pStmt.setInt(2, custAcc);
            pStmt.executeUpdate();
+           System.out.println("Succesfully deposited " + amount);
 
-           // Display new balance
-           while(r1.next()) {
-               System.out.println("Your account " + custAcc + " New balance is " + r1.getFloat("balance"));
-           }
-           r1.close();
-
+           pStmt = Main.c.prepareStatement("INSERT INTO transaction (account_id, type, amount, transaction_date) VALUES(?,?,?,?);");
+               pStmt.setInt(1, custAcc);
+               pStmt.setString(2, "Deposit");
+               pStmt.setFloat(3, amount);
+               Date cur_date = new Date(System.currentTimeMillis());
+               pStmt.setDate(4, cur_date);
+               pStmt.executeUpdate();
        } catch (Exception e) {
-           System.err.println("An error occurred: " + e);
-           System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
-                   + Main.JDBC_HOST
-                   + " WITH PORT " + Main.JDBC_PORT
-                   + " AND DATABASE " + Main.JDBC_DB
-                   + " AND USER " + Main.DBUSER
-                   + " WITH PASSWORD " + Main.DBPASSWD);
+        System.out.println("Error depositing, error:" + e.getMessage());
        }
    }
 
    // FINISHED
    public static void Withdrawal(int SSN) {
        Hashtable<Integer, Float> accounts = new Hashtable<>();
+       Hashtable<Integer, Boolean> neg_allow_a = new Hashtable<>();
        float newBal;
-       float amount;
        float currBal;
-       int custAcc;
        int branch;
 
        Scanner input = new Scanner(System.in);
@@ -218,29 +367,31 @@ public class Function {
        try {
            System.out.println("Showing all accounts under customer profile: ");
            PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT* FROM account WHERE ssn = ?;");
-           PreparedStatement pStmt2 = Main.c.prepareStatement("SELECT * FROM customers WHERE  ssn = ?;");
            pStmt1.setInt(1, SSN);
-           pStmt2.setInt(1, SSN);
            ResultSet r1 = pStmt1.executeQuery();
-           ResultSet r2 = pStmt2.executeQuery();
 
-           while(r1.next() && r2.next()){
+           while(r1.next()){
                System.out.println("AID: " + r1.getString("account_id") +
                        " Type: " + r1.getString("type") +
                        " Balance: " + r1.getFloat("balance"));
-               accounts.put(r1.getInt("account_id"), r1.getDouble("balance"));
-               branch = r2.getInt("home_branch");
+               accounts.put(r1.getInt("account_id"), r1.getFloat("balance"));
+               neg_allow_a.put(r1.getInt("account_id"), r1.getBoolean("allow_negative"));
            }
            r1.close();
-           r2.close();
 
-           System.out.println("Which account do you withdrawl from?");
+           int custAcc = -1;
+           while(!accounts.containsKey(custAcc)){
+            System.out.println("Which account do you want to withdrawl from?");
            custAcc = input.nextInt();
-           System.out.println("How much do you want to withdrawl?");
-           amount = input.nextFloat();
+           }
+           float amount = 0;
+           while(amount <= 0){
+            System.out.println("How much do you want to withdrawl?");
+            amount = input.nextFloat();
+           }
            currBal = accounts.get(custAcc);
            newBal = currBal - amount;
-           boolean negAllow1 = r1.getBoolean("negAllow");
+           boolean negAllow1 = neg_allow_a.get(custAcc);
 
            if (currBal >= amount) {
                newBal = currBal - amount;
@@ -249,9 +400,20 @@ public class Function {
                pStmt.setFloat(1, newBal);
                pStmt.setInt(2, custAcc);
                pStmt.executeUpdate();
-           } else if (!r1.getBoolean("negAllow"))
-               System.out.println("Cannot withdrawal " + amount + ", it will be overdraft.");
+               System.out.println("Succesfully withdrawled " + amount);
 
+                pStmt = Main.c.prepareStatement("INSERT INTO transaction (account_id, type, amount, transaction_date) VALUES(?,?,?,?);");
+                pStmt.setInt(1, custAcc);
+                pStmt.setString(2, "Withdrawal");
+                pStmt.setFloat(3, amount);
+                Date cur_date = new Date(System.currentTimeMillis());
+                pStmt.setDate(4, cur_date);
+                pStmt.executeUpdate();
+           } 
+           else if (!negAllow1){
+            System.out.println("Cannot withdrawal " + amount + ", it will be overdraft.");
+            return;
+           }
            else {
                newBal = currBal - amount;
                accounts.put(custAcc, newBal);
@@ -259,15 +421,18 @@ public class Function {
                pStmt.setFloat(1, newBal);
                pStmt.setInt(2, custAcc);
                pStmt.executeUpdate();
+               System.out.println("Succesfully withdrawled " + "$" + amount);
+
+               pStmt = Main.c.prepareStatement("INSERT INTO transaction (account_id, type, amount, transaction_date) VALUES(?,?,?,?);");
+               pStmt.setInt(1, custAcc);
+               pStmt.setString(2, "Withdrawal");
+               pStmt.setFloat(3, amount);
+               Date cur_date = new Date(System.currentTimeMillis());
+               pStmt.setDate(4, cur_date);
+               pStmt.executeUpdate();
            }
        } catch (Exception e) {
-           System.err.println("An error occurred: " + e);
-           System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
-                   + Main.JDBC_HOST
-                   + " WITH PORT " + Main.JDBC_PORT
-                   + " AND DATABASE " + Main.JDBC_DB
-                   + " AND USER " + Main.DBUSER
-                   + " WITH PASSWORD " + Main.DBPASSWD);
+        System.out.println("Error withdrawing, error:" + e.getMessage());
        }
    }
 
@@ -483,15 +648,17 @@ public class Function {
        If Costumer's home branch and manager's home branch is different,
       manager cannot update the overdraft fee.
      */
-   public static void updateOverdraft(int SSN, int newOverdraft) throws Exception{
+   public static void updateOverdraft(int SSN) throws Exception{
        int branch = 0;
        int overdraft;
        int custSSN;
        int account;
        Scanner input = new Scanner(System.in);
+        System.out.println("Enter new overdraft fee.");
+        int newOverdraft = input.nextInt();
 
        try {
-           custSSN = selectCustomer();
+           custSSN = SSN;
            PreparedStatement pStmt3 = Main.c.prepareStatement("SELECT * FROM account WHERE ssn = ?;");
            pStmt3.setInt(1, custSSN);
            ResultSet r3 = pStmt3.executeQuery();
@@ -503,42 +670,14 @@ public class Function {
            r3.close();
            account = input.nextInt();
 
-           PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT* from employee WHERE (ssn = ? AND role = ?);");
-           PreparedStatement pStmt2 = Main.c.prepareStatement("SELECT * FROM account WHERE account_id = ?;");
-           pStmt1.setInt(1, SSN);
-           pStmt1.setInt(2, Integer.parseInt("Manager"));
-           pStmt2.setInt(1, account);
-           ResultSet r1 = pStmt1.executeQuery();
-           ResultSet r2 = pStmt2.executeQuery();
-
-           while (r2.next()) {
-               branch = r2.getInt("home_branch");
-           }
-           r2.close();
-
-           /*
-              Check Manager's home branch and customers' account home branch
-              If so, then update account's Overdraft fee
-            */
-           if (branch == r1.getInt("home_branch")) {
-               overdraft = newOverdraft;
-               PreparedStatement pStmt = Main.c.prepareStatement("UPDATE account SET overdraft_fee = ? WHERE account_id = ?;");
-               pStmt.setInt(1, overdraft);
-               pStmt.setInt(2, account);
-               pStmt.executeUpdate();
-           }
-
-           else {
-               System.out.println("You cannot update information to the other branch");
-           }
+        overdraft = newOverdraft;
+        PreparedStatement pStmt = Main.c.prepareStatement("UPDATE account SET overdraft_fee = ? WHERE account_id = ?;");
+        pStmt.setInt(1, overdraft);
+        pStmt.setInt(2, account);
+        pStmt.executeUpdate();
+        System.out.println("Successfully updated overdraft fee.");
        } catch (Exception e) {
-           System.err.println("An error occurred: " + e);
-           System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
-                   + Main.JDBC_HOST
-                   + " WITH PORT " + Main.JDBC_PORT
-                   + " AND DATABASE " + Main.JDBC_DB
-                   + " AND USER " + Main.DBUSER
-                   + " WITH PASSWORD " + Main.DBPASSWD);
+        System.out.println("Error updating overdraft fee " + e.getMessage());
        }
 
 }
@@ -550,15 +689,16 @@ public class Function {
       If Costumer's home branch and manager's home branch is different,
       manager cannot update the monthly account fee.
     */
-    public static void updateAccountFee(int SSN, int newAccountFee) throws Exception{
+    public static void updateAccountFee(int SSN) throws Exception{
         int branch = 0;
         int fee;
         int custSSN;
         int account;
         Scanner input = new Scanner(System.in);
-
+        System.out.println("Enter new account fee.");
+        int newAccountFee = input.nextInt();
         try {
-            custSSN = selectCustomer();
+            custSSN = SSN;
             PreparedStatement pStmt3 = Main.c.prepareStatement("SELECT * FROM account WHERE ssn = ?;");
             pStmt3.setInt(1, custSSN);
             ResultSet r3 = pStmt3.executeQuery();
@@ -569,42 +709,13 @@ public class Function {
             r3.close();
             account = input.nextInt();
 
-            PreparedStatement pStmt1 = Main.c.prepareStatement("SELECT* from employee WHERE (ssn = ? AND role = ?);");
-            PreparedStatement pStmt2 = Main.c.prepareStatement("SELECT * FROM account WHERE account_id = ?;");
-            pStmt1.setInt(1, SSN);
-            pStmt1.setInt(2, Integer.parseInt("Manager"));
-            pStmt2.setInt(1, account);
-            ResultSet r1 = pStmt1.executeQuery();
-            ResultSet r2 = pStmt2.executeQuery();
-
-            while (r2.next()) {
-                branch = r2.getInt("home_branch");
-            }
-            r2.close();
-
-           /*
-              Check Manager's home branch and customers' account home branch
-              If so, then update account's Monthly account fee
-            */
-            if (branch == r1.getInt("home_branch")) {
-                fee = newAccountFee;
-                PreparedStatement pStmt = Main.c.prepareStatement("UPDATE account SET monthly_fee = ? WHERE account_id = ?;");
-                pStmt.setInt(1, fee);
-                pStmt.setInt(2, account);
-                pStmt.executeUpdate();
-            }
-
-            else {
-                System.out.println("You cannot update information to the other branch");
-            }
+            PreparedStatement pStmt = Main.c.prepareStatement("UPDATE account SET monthly_fee = ? WHERE account_id = ?;");
+            pStmt.setInt(1, newAccountFee);
+            pStmt.setInt(2, account);
+            pStmt.executeUpdate();
+            System.out.println("Successfully updated account fee.");
         } catch (Exception e) {
-            System.err.println("An error occurred: " + e);
-            System.err.println("\n\nFOR THIS PROGRAM TO WORK YOU HAVE TO HAVE A POSTGRES SERVER RUNNING LOCALLY (OR DOCKER) AT "
-                    + Main.JDBC_HOST
-                    + " WITH PORT " + Main.JDBC_PORT
-                    + " AND DATABASE " + Main.JDBC_DB
-                    + " AND USER " + Main.DBUSER
-                    + " WITH PASSWORD " + Main.DBPASSWD);
+            System.out.println("Error updating account fee " + e.getMessage());
         }
     }
 

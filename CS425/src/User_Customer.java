@@ -14,7 +14,8 @@ public class User_Customer {
             System.out.println("Enter 5: Check Balance");
             System.out.println("Enter 6: Monthly Statement");
             System.out.println("Enter 7: Make a Transfer");
-            System.out.println("Enter 8: Logout");
+            System.out.println("Enter 8: Show Pending Transactions");
+            System.out.println("Enter 9: Logout");
             int action = scan.nextInt();
             switch(action){
                     case 1:{
@@ -38,7 +39,7 @@ public class User_Customer {
                         break;
                     }
                     case 6:{
-                        //Function.ShowStatement(SSN);
+                        Function.ShowStatement(SSN);
                         break;
                     }
                     case 7:{
@@ -46,6 +47,10 @@ public class User_Customer {
                         break;
                     }
                     case 8:{
+                        Function.ShowPendingTransactions(Function.selectCustomer());
+                        break;
+                    }
+                    case 9:{
                         System.out.println("Logged out.");
                         loggedIn = false;
                         break;

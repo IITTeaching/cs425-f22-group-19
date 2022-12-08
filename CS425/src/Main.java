@@ -10,7 +10,6 @@ import java.util.Scanner;
 public class Main {
 
 	public static final String JDBC_DRIVER = "org.postgresql.Driver";
-	// postgres URLs are of the form: jdbc:postgresql://host:port/database
 	public static final String JDBC_DB = "bank";
 	public static final String JDBC_PORT = "5432";
 	public static final String JDBC_HOST = "104.194.112.188";
@@ -26,19 +25,8 @@ public class Main {
 			Class.forName(JDBC_DRIVER);
 			// create a connection
 			c = DriverManager.getConnection(JDBC_URL, DBUSER, DBPASSWD);
-            
             System.out.println("Connection to Bank Database Successful.");	
-            
             login();
-            // PreparedStatement pStmt = c.prepareStatement("INSERT INTO branch (add1, add2, city, state, zip) VALUES(?,?,?,?,?)");
-			
-			// pStmt.setString(1, "Test Branch Add1");
-			// pStmt.setString(2, "Test Branch Add2");
-			// pStmt.setString(3, "Chicago");
-			// pStmt.setString(4, "IL");
-            // pStmt.setInt(5, 60305);
-			// pStmt.executeUpdate();
-
 		}
 		catch (Exception e) {
 			System.err.println("An error occurred: " + e.toString());

@@ -11,7 +11,8 @@ public class User_Teller {
             System.out.println("Enter 3: Check Balance");
             System.out.println("Enter 4: Monthly Statment");
             System.out.println("Enter 5: Make a Transfer");
-            System.out.println("Enter 6: Logout");
+            System.out.println("Enter 6: Show Pending Transactions");
+            System.out.println("Enter 7: Logout");
             int action = scan.nextInt();
             switch(action){
                     case 1:{
@@ -27,7 +28,7 @@ public class User_Teller {
                         break;
                     }
                     case 4:{
-                        //Function.ShowStatement(Function.selectCustomer());
+                        Function.ShowStatement(Function.selectCustomer());
                         break;
                     }
                     case 5:{
@@ -35,6 +36,10 @@ public class User_Teller {
                         break;
                     }
                     case 6:{
+                        Function.ShowPendingTransactions(Function.selectCustomer());
+                        break;
+                    }
+                    case 7:{
                         System.out.println("Logged out.");
                         loggedIn = false;
                         break;
